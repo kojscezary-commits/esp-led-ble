@@ -1,0 +1,31 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pobierz kod
+        uses: actions/checkout@v4
+
+      - name: Ustaw Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Nadaj uprawnienia do Gradle
+        run: chmod +x gradlew
+
+      - name: Zbuduj APK
+        run: ./gradlew assembleDebug
+
+      - name: Wgraj APK jako artefakt
+        uses: actions/upload-artifact@v4
+        with:
+          name: ESP-LED-apk
+          path: app/build/outputs/apk/debug/*.apk
